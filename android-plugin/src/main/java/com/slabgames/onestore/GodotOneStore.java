@@ -1,4 +1,4 @@
-package ru.mobilap.adjust;
+package com.slabgames.onestore;
 
 import android.app.Activity;
 import android.app.Application;
@@ -24,11 +24,11 @@ import org.godotengine.godot.GodotLib;
 import org.godotengine.godot.plugin.GodotPlugin;
 import org.godotengine.godot.plugin.SignalInfo;
 
-public class GodotAdjust extends GodotPlugin {
+public class GodotOneStore extends GodotPlugin {
 
-    private final String TAG = GodotAdjust.class.getName();
+    private final String TAG = GodotOneStore.class.getName();
 
-    public GodotAdjust(Godot godot) 
+    public GodotOneStore(Godot godot) 
     {
         super(godot);
     }
@@ -55,37 +55,14 @@ public class GodotAdjust extends GodotPlugin {
 
     @Override
     public View onMainCreate(Activity activity) {
-        // final Activity act = activity;
-        // act.runOnUiThread(new Runnable() {
-        //     @Override
-        //     public void run() {
-
-        //         String appToken = "opp0c2aasagw";
-        //         String environment;
-        //         AdjustConfig config;
-        //         boolean ProductionMode = false;
-
-        //         if (ProductionMode == true) {
-        //             environment = AdjustConfig.ENVIRONMENT_PRODUCTION;
-        //         }
-        //         else {
-        //             environment = AdjustConfig.ENVIRONMENT_SANDBOX;
-        //         }
-                
-        //         config = new AdjustConfig(act.getApplicationContext(), appToken, environment);
-        //         if (ProductionMode == true) {
-        //             config.setLogLevel(LogLevel.SUPRESS);
-        //         }
-        //         else {
-        //             config.setLogLevel(LogLevel.VERBOSE);
-        //         }
-
-        //         Adjust.onCreate(config);
-                
-        //         act.getApplication().registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
-        //         Log.d(TAG,"Adjust plugin inited onCreate");
-        //     }
-        // });
+        final Activity act = activity;
+        act.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {                
+                act.getApplication().registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
+                Log.d(TAG,"OneStore plugin inited onCreate");
+            }
+        });
         return null;
     }
 
