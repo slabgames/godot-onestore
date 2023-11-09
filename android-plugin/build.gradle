@@ -56,7 +56,7 @@ dependencies {
 group = 'com.slabgames.godot'
 version = '0.1.0'
 ext {
-    artifact = 'godot-adjust'
+    artifact = 'godot-onestore'
 }
 
 Properties properties = new Properties()
@@ -88,10 +88,10 @@ afterEvaluate {
         pkg {
             repo = 'maven'
             name = artifact
-            userOrg = 'mobilap'
-            desc = 'Adjust plugin for godot engine.'
-            websiteUrl = 'https://github.com/DrMoriarty/godot-adjust'
-            vcsUrl = 'https://github.com/DrMoriarty/godot-adjust.git'
+            userOrg = 'slab'
+            desc = 'Onestore plugin for godot engine.'
+            websiteUrl = 'https://github.com/slabgames/godot-onestore'
+            vcsUrl = 'https://github.com/slabgames/godot-onestore.git'
             licenses = ["MIT", "BSD"]
             publish = true
             publicDownloadNumbers = true

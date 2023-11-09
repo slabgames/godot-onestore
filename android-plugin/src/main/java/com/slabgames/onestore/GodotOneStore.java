@@ -273,18 +273,7 @@ public class GodotOneStore extends GodotPlugin {
         //...
      }
     
-    
 
-
-
-
-
-    public void track_revenue(final String revenue, final String currency, final String signature, final String originalJson, final String public_key)
-    {
-        AdjustEvent adjustEvent = new AdjustEvent(signature);
-        adjustEvent.setRevenue(Double.parseDouble(revenue), currency);
-        Adjust.trackEvent(adjustEvent);
-    }
 
 
     // Internal methods
