@@ -1,5 +1,5 @@
 {
-  "name": "adjust",
+  "name": "one store",
   "display_name": "One Store SDK",
   "description": "One Store",
   "version": "4.29.0",
@@ -8,7 +8,7 @@
   "category": "misc",
   "godot_version": "3.5.3",
   "author": {
-    "name": "DrMoriarty",
+    "name": "SLAB",
     "url": "https://github.com/slabgames",
   },
   "variables": {
