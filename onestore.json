@@ -1,0 +1,37 @@
+{
+  "name": "adjust",
+  "display_name": "One Store SDK",
+  "description": "One Store",
+  "version": "4.29.0",
+  "license": "MIT",
+  "url": "https://github.com/slabgames/godot-onestore",
+  "category": "misc",
+  "godot_version": "3.5.3",
+  "author": {
+    "name": "DrMoriarty",
+    "url": "https://github.com/slabgames",
+  },
+  "variables": {
+    "One Store Token": {
+      "info": "Set your App Token here"
+    }
+  },
+  "files": {
+    "gd": "scripts"
+  },
+  "autoload": {
+    "onestore": "*res://scripts/onestore.gd"
+  },
+  "platform_ios": {
+    "dependencies": ["ios-att"],
+    "files": {
+
+    }
+  },
+  "platform_android": {
+    "files": {
+      "android-plugin/GodotOneStore.gdap": "android/plugins/",
+      "android-plugin/build/outputs/aar/GodotOneStore.release.aar": "android/plugins/"
+    }
+  }
+}
