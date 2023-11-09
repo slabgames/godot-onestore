@@ -1,0 +1,11 @@
+[config]
+
+name="GodotOneStore"
+binary_type="local"
+binary="GodotOneStore.release.aar"
+
+[dependencies]
+
+local=[]
+remote=["com.onestorecorp.sdk:sdk-iap:21.00.00","com.onestorecorp.sdk:sdk-configuration-kr:1.0.0"]
+custom_maven_repos=["https://repo.onestore.co.kr/repository/onestore-sdk-public/"]
