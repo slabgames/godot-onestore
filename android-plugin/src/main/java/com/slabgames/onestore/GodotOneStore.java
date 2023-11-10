@@ -24,6 +24,8 @@ import org.godotengine.godot.GodotLib;
 import org.godotengine.godot.plugin.GodotPlugin;
 import org.godotengine.godot.plugin.SignalInfo;
 
+
+
 public class GodotOneStore extends GodotPlugin {
 
     private final String TAG = GodotOneStore.class.getName();
@@ -59,7 +61,7 @@ public class GodotOneStore extends GodotPlugin {
         act.runOnUiThread(new Runnable() {
             @Override
             public void run() {                
-                act.getApplication().registerActivityLifecycleCallbacks(new AdjustLifecycleCallbacks());
+                act.getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
                 Log.d(TAG,"OneStore plugin inited onCreate");
             }
         });

@@ -8,6 +8,10 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:4.1.3'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
+
+
+
+
     }
 }
 
@@ -50,7 +54,8 @@ dependencies {
      library when building the final binary.
      */
     compileOnly fileTree(dir: 'libs', include: ['godot-lib*.aar'])
-    
+    implementation "com.onestorecorp.sdk:sdk-iap:21.00.00"
+    implementation "com.onestorecorp.sdk:sdk-configuration-kr:1.0.0"
 }
 
 group = 'com.slabgames.godot'
