@@ -13,8 +13,11 @@ func _ready():
     else:
         push_error('You should set OneStore/AppToken to SDK initialization')
 
-func init(token: String, production := false) -> void:
+func init(licenseKey: String) -> void:
     if _onestore != null:
-        _onestore.init(token, production)
+        _onestore.init(token)
         print('OneStore plugin inited!')
         
+func queryPurchase()->void:
+    _if _onestore != null:
+    _onestore.queryPurchase();

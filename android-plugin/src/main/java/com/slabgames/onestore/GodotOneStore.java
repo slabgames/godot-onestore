@@ -38,6 +38,7 @@ public class GodotOneStore extends GodotPlugin {
 
     private final String TAG = GodotOneStore.class.getName();
     private PurchaseClient purchaseClient;
+    private boolean _purchaseClientReady;
 
     public GodotOneStore(Godot godot) 
     {
@@ -53,7 +54,9 @@ public class GodotOneStore extends GodotPlugin {
     @Override
     public List<String> getPluginMethods() {
         return Arrays.asList(
-                "init"
+                "init",
+                "queryPurchase"
+
 
         );
     }
@@ -64,20 +67,84 @@ public class GodotOneStore extends GodotPlugin {
         return Collections.singleton(loggedInSignal);
     }
     */
+    public void init(final String licenseKey)
+    {
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                PurchaseClient purchaseClient = PurchaseClient.newBuilder(getActivity())
+                        .setListener(purchasesUpdatedListener)
+                        .setBase64PublicKey(licenseKey) // optional
+                        .build();
+
+                getActivity().getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
+
+
+                startConnection();
+                Log.d(TAG,"One Store plugin init on Java");
+            }
+        });
+    }
+
+    private void startConnection() {
+        purchaseClient.startConnection(new PurchaseClientStateListener() {
+            @Override
+            public void onSetupFinished(IapResult iapResult) {
+                if(iapResult.isSuccess())
+                {
+                    // The PurchaseClient is ready. You can query purchases here.
+                    Log.d(TAG,"One Store Purchase Client inited");
+                    _purchaseClientReady = true;
+
+                }
+            }
+
+            @Override
+            public void onServiceDisconnected() {
+                // Try to restart the connection on the next request to
+                // PurchaseClient by calling the startConnection() method.
+                Log.d(TAG,"One Store Purchase Client disconnected");
+                _purchaseClientReady = false;
+                startConnection();
+            }
+        });
+    }
 
     @Override
     public View onMainCreate(Activity activity) {
+        _purchaseClientReady = false;
         final Activity act = activity;
         act.runOnUiThread(new Runnable() {
             @Override
             public void run() {                
                 act.getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
                 Log.d(TAG,"OneStore plugin inited onCreate");
-                init();
             }
         });
         return null;
     }
+
+    private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
+        @Override
+        public void onPurchasesUpdated(IapResult iapResult, List<PurchaseData> purchases) {
+            // To be implemented in a later section.
+            if (iapResult.isSuccess() && purchases != null) {
+                for (PurchaseData purchase : purchases) {
+                    handlePurchase(purchase);
+                }
+            } else if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_NEED_UPDATE) {
+                // PurchaseClient by calling the launchUpdateOrInstallFlow() method.
+
+
+            } else if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_NEED_LOGIN) {
+                // PurchaseClient by calling the launchLoginFlow() method.
+            } else {
+                // Handle any other error codes.
+            }
+        }
+    };
 
     QueryPurchasesListener queryPurchasesListener = new QueryPurchasesListener() {
         @Override
@@ -138,62 +205,11 @@ public class GodotOneStore extends GodotPlugin {
 
     }
 
-    private PurchasesUpdatedListener purchasesUpdatedListener = new PurchasesUpdatedListener() {
-        @Override
-        public void onPurchasesUpdated(IapResult iapResult, List<PurchaseData> purchases) {
-            // To be implemented in a later section.
-            if (iapResult.isSuccess() && purchases != null) {
-                for (PurchaseData purchase : purchases) {
-                    handlePurchase(purchase);
-                }
-            } else if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_NEED_UPDATE) {
-                // PurchaseClient by calling the launchUpdateOrInstallFlow() method.
-            } else if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_NEED_LOGIN) {
-                // PurchaseClient by calling the launchLoginFlow() method.
-            } else {
-                // Handle any other error codes.
-            }
-        }
-    };
+
 
     // Public methods
 
-    public void init()
-    {
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
 
-                
-                PurchaseClient purchaseClient = PurchaseClient.newBuilder(getActivity())
-                   .setListener(purchasesUpdatedListener)
-                   //.setBase64PublicKey(/*your license key*/) // optional
-                   .build();
-                
-                getActivity().getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
-
-
-                purchaseClient.startConnection(new PurchaseClientStateListener() {
-                    @Override
-                    public void onSetupFinished(IapResult iapResult) {
-                        if(iapResult.isSuccess())
-                        {
-                            // The PurchaseClient is ready. You can query purchases here.
-                            Log.d(TAG,"One Store Purchase Client inited");
-                        }
-                    }
-
-                    @Override
-                    public void onServiceDisconnected() {
-                        // Try to restart the connection on the next request to
-                        // PurchaseClient by calling the startConnection() method.
-                        Log.d(TAG,"One Store Purchase Client disconnected");
-                    }
-                });
-                Log.d(TAG,"One Store plugin inited on Java");
-            }
-        });
-    }
 
 //    public void launchManageSubscription(@Nullable PurchaseData purchaseData) {
 //        SubscriptionParams subscriptionParams = null;

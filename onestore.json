@@ -2,7 +2,7 @@
   "name": "one store",
   "display_name": "One Store SDK",
   "description": "One Store",
-  "version": "4.29.0",
+  "version": "1.0.0",
   "license": "MIT",
   "url": "https://github.com/slabgames/godot-onestore",
   "category": "misc",
@@ -12,8 +12,8 @@
     "url": "https://github.com/slabgames",
   },
   "variables": {
-    "One Store Token": {
-      "info": "Set your App Token here"
+    "One Store License Key": {
+      "info": "Set your License Key here"
     }
   },
   "files": {

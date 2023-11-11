@@ -19,6 +19,7 @@ allprojects {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://repo.onestore.co.kr/repository/onestore-sdk-public' }
     }
 }
 
@@ -45,7 +46,7 @@ android {
 }
 
 dependencies {
-    implementation 'androidx.annotation:annotation:1.1.0'
+    implementation 'androidx.annotation:annotation-jvm:1.7.0'
 
     /*
     Used to provide dependency on the Godot Android library. A version of that
