@@ -45,6 +45,8 @@ android {
 }
 
 dependencies {
+    implementation 'androidx.annotation:annotation:1.1.0'
+
     /*
     Used to provide dependency on the Godot Android library. A version of that
     library will be made available for each stable release of Godot.
