@@ -82,7 +82,7 @@ public class GodotOneStore extends GodotPlugin {
                 getActivity().getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
 
 
-                startConnection();
+
                 Log.d(TAG,"One Store plugin init on Java");
             }
         });
@@ -140,6 +140,7 @@ public class GodotOneStore extends GodotPlugin {
 
             } else if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_NEED_LOGIN) {
                 // PurchaseClient by calling the launchLoginFlow() method.
+                startConnection();
             } else {
                 // Handle any other error codes.
             }
