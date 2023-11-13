@@ -79,6 +79,7 @@ public class GodotOneStore extends GodotPlugin {
                         .setBase64PublicKey(licenseKey) // optional
                         .build();
 
+
                 getActivity().getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
 
 
