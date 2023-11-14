@@ -259,6 +259,7 @@ public class GodotOneStore extends GodotPlugin {
                     @Override
                     public void onProductDetailsResponse(IapResult iapResult, List<ProductDetail> list) {
                         // Process the result.
+                        GodotLib.calldeferred(_callbackId,"on_product_details_response",new Object[]{list});
                     }
                     
                 });
