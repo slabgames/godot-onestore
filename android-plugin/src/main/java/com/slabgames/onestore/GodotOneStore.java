@@ -15,6 +15,7 @@ import androidx.annotation.NonNull;
 
 
 import org.godotengine.godot.Godot;
+import org.godotengine.godot.GodotLib;
 import org.godotengine.godot.plugin.GodotPlugin;
 
 
@@ -39,6 +40,8 @@ public class GodotOneStore extends GodotPlugin {
     private final String TAG = GodotOneStore.class.getName();
     private PurchaseClient purchaseClient;
     private boolean _purchaseClientReady;
+
+    private int _callbackId;
 
     public GodotOneStore(Godot godot) 
     {
@@ -67,8 +70,9 @@ public class GodotOneStore extends GodotPlugin {
         return Collections.singleton(loggedInSignal);
     }
     */
-    public void init(final String licenseKey)
+    public void init(final String licenseKey, final int callback_id)
     {
+        _callbackId = callback_id;
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -97,6 +101,7 @@ public class GodotOneStore extends GodotPlugin {
                 {
                     // The PurchaseClient is ready. You can query purchases here.
                     Log.d(TAG,"One Store Purchase Client inited");
+                    GodotLib.calldeferred(_callbackId,"on_setup_success",new Object[]{});
                     _purchaseClientReady = true;
 
                 }
@@ -239,7 +244,7 @@ public class GodotOneStore extends GodotPlugin {
         purchaseClient.launchPurchaseFlow(getActivity(), purchaseFlowParams);
     }
 
-    public void queryProductDetailsAsync()
+    public void queryProductDetailsAsync(final List<String> productIdList)
     {
         getActivity().runOnUiThread(new Runnable() {
             @Override
