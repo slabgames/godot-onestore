@@ -244,12 +244,12 @@ public class GodotOneStore extends GodotPlugin {
         purchaseClient.launchPurchaseFlow(getActivity(), purchaseFlowParams);
     }
 
-    public void queryProductDetailsAsync(final List<String> productIdList)
+    public void queryProductDetailsAsync(final String[] productIdArray)
     {
         getActivity().runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                List<String> productIdList = null;
+                List<String> productIdList = Arrays.asList(productIdArray);
                 ProductDetailsParams productDetailsParams = ProductDetailsParams.newBuilder()
                 .setProductIdList(productIdList)
                 .setProductType(PurchaseClient.ProductType.ALL)
@@ -259,7 +259,7 @@ public class GodotOneStore extends GodotPlugin {
                     @Override
                     public void onProductDetailsResponse(IapResult iapResult, List<ProductDetail> list) {
                         // Process the result.
-                        GodotLib.calldeferred(_callbackId,"on_product_details_response",new Object[]{list});
+                        GodotLib.calldeferred(_callbackId,"on_product_details_response",new Object[]{list.toArray()});
                     }
                     
                 });
