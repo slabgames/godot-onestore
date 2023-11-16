@@ -61,8 +61,10 @@ public class GodotOneStore extends GodotPlugin {
     public List<String> getPluginMethods() {
         return Arrays.asList(
                 "init",
-                "queryPurchase",
-                "handlePurchase"
+                "queryPurchases",
+                "acknowledgePurchase",
+                "consumePurchase",
+                "requestPurchase"
 
 
         );
@@ -74,28 +76,7 @@ public class GodotOneStore extends GodotPlugin {
         return Collections.singleton(loggedInSignal);
     }
     */
-    public void init(final String licenseKey, final int callback_id)
-    {
-        _callbackId = callback_id;
-        getActivity().runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
 
-
-                PurchaseClient purchaseClient = PurchaseClient.newBuilder(getActivity())
-                        .setListener(purchasesUpdatedListener)
-                        .setBase64PublicKey(licenseKey) // optional
-                        .build();
-
-
-                getActivity().getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
-
-
-
-                Log.d(TAG,"One Store plugin init on Java");
-            }
-        });
-    }
 
     private void startConnection() {
         _purchaseClient.startConnection(new PurchaseClientStateListener() {
@@ -148,13 +129,14 @@ public class GodotOneStore extends GodotPlugin {
                 }
             } else if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_NEED_UPDATE) {
                 // PurchaseClient by calling the launchUpdateOrInstallFlow() method.
-
+                _purchaseClient.launchUpdateOrInstallFlow(getActivity(),iapResultListener);
 
             } else if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_NEED_LOGIN) {
                 // PurchaseClient by calling the launchLoginFlow() method.
                 startConnection();
             } else {
                 // Handle any other error codes.
+                Log.e(TAG, "Error in PurchasesUpdatedListener");
             }
         }
     };
@@ -178,8 +160,6 @@ public class GodotOneStore extends GodotPlugin {
                 for (PurchaseData purchase : purchases) {
                     _purchasesDataMap.put(purchase.getPurchaseId(),purchase);
                     purchaseIds.add(purchase.getPurchaseId());
-
-//                    handlePurchase(purchase);
                 }
                 GodotLib.calldeferred(_callbackId,"on_purchase_response",new Object[]{purchaseIds.toArray()});
             } else if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_NEED_UPDATE) {
@@ -190,12 +170,57 @@ public class GodotOneStore extends GodotPlugin {
                 startConnection();
             } else {
                 // Handle any other error codes.
+                Log.e(TAG,"error handling query puchase");
             }
         }
 
     };
 
-    public  void queryPurchase()
+
+
+    private void handlePurchase(PurchaseData purchase) {
+
+        if (purchase.getPurchaseState() == PurchaseData.PurchaseState.PURCHASED) {
+
+            GodotLib.calldeferred(_callbackId,"on_handle_purchase",new Object[]{purchase.getProductId()});
+
+                // Purchase retrieved from PurchaseClient#queryPurchasesAsync or your PurchasesUpdatedListener.
+                //        PurchaseData purchase =
+
+                // Verify the purchase.
+                // Ensure entitlement was not already granted for this purchaseToken.
+                // Grant entitlement to the user.
+
+        }
+
+    }
+
+
+
+    // Public methods
+    public void init(final String licenseKey, final int callback_id)
+    {
+        _callbackId = callback_id;
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+
+
+                PurchaseClient purchaseClient = PurchaseClient.newBuilder(getActivity())
+                        .setListener(purchasesUpdatedListener)
+                        .setBase64PublicKey(licenseKey) // optional
+                        .build();
+
+
+                getActivity().getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
+                
+
+                Log.d(TAG,"One Store plugin init on Java");
+            }
+        });
+    }
+
+    public  void queryPurchases()
     {
         _purchaseClient.queryPurchasesAsync(PurchaseClient.ProductType.INAPP, queryPurchasesListener);
     }
@@ -235,39 +260,6 @@ public class GodotOneStore extends GodotPlugin {
         });
     }
 
-    public void handlePurchase(PurchaseData purchase) {
-
-        if (purchase.getPurchaseState() == PurchaseData.PurchaseState.PURCHASED) {
-
-            GodotLib.calldeferred(_callbackId,"on_handle_purchase",new Object[]{purchase.getProductId()});
-
-                // Purchase retrieved from PurchaseClient#queryPurchasesAsync or your PurchasesUpdatedListener.
-                //        PurchaseData purchase =
-
-                // Verify the purchase.
-                // Ensure entitlement was not already granted for this purchaseToken.
-                // Grant entitlement to the user.
-
-        }
-
-    }
-
-
-
-    // Public methods
-
-
-//    public void launchManageSubscription(@Nullable PurchaseData purchaseData) {
-//        SubscriptionParams subscriptionParams = null;
-//        if (purchaseData != null) {
-//                subscriptionParams = SubscriptionParams.newBuilder()
-//                .setPurchaseData(purchaseData)
-//                .build();
-//        }
-//        GodotOneStore purchaseClient = null;
-//        purchaseClient.launchManageSubscription(getActivity(), subscriptionParams);
-//    }
-
     public void requestPurchase(String productId)
     {
         PurchaseFlowParams purchaseFlowParams = PurchaseFlowParams.newBuilder()
@@ -291,7 +283,7 @@ public class GodotOneStore extends GodotPlugin {
                 List<String> productIdList = Arrays.asList(productIdArray);
                 ProductDetailsParams productDetailsParams = ProductDetailsParams.newBuilder()
                 .setProductIdList(productIdList)
-                .setProductType(PurchaseClient.ProductType.ALL)
+                .setProductType(PurchaseClient.ProductType.INAPP)
                 .build();
 
                 _purchaseClient.queryProductDetailsAsync(productDetailsParams, new ProductDetailsListener() {
@@ -323,7 +315,7 @@ public class GodotOneStore extends GodotPlugin {
 
         @Override
          public void onActivityResumed(Activity activity) {
-             
+
          }
 
          @Override
