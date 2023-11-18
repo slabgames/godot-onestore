@@ -49,6 +49,7 @@ public class OnestoreUtils {
 		dictionary.put("purchase_token", purchase.getPurchaseToken());
 		dictionary.put("quantity", purchase.getQuantity());
 		dictionary.put("signature", purchase.getSignature());
+		dictionary.put("sku", purchase.getProductId());
 		// PBL V4 replaced getSku with getSkus to support multi-sku purchases,
 		// use the first entry for "sku" and generate an array for "skus"
 //		String[] products = purchase.getProducts().toArray(new String[0]);
