@@ -48,6 +48,7 @@ public class GodotOneStore extends GodotPlugin {
     private final HashMap<String, ProductDetail> productDetailsCache = new HashMap<>(); // sku → SkuDetails
     private PurchaseClient _purchaseClient;
     private boolean _purchaseClientReady;
+    private boolean _calledStartConnection;
     private HashMap<String,PurchaseData> _purchasesDataMap;
 
     private int _callbackId;
@@ -56,6 +57,7 @@ public class GodotOneStore extends GodotPlugin {
     public GodotOneStore(Godot godot) 
     {
         super(godot);
+        _calledStartConnection = false;
     }
 
     @Override
@@ -63,18 +65,24 @@ public class GodotOneStore extends GodotPlugin {
         return "GodotOneStore";
     }
 
-//    @NonNull
-//    @Override
-//    public List<String> getPluginMethods() {
-//        return Arrays.asList(
-//                "init",
-//                "queryPurchases",
-//                "acknowledgePurchase",
-//                "consumePurchase",
-//                "requestPurchase",
-//                "queryProductDetailsAsync"
-//        );
-//    }
+   @NonNull
+   @Override
+   public List<String> getPluginMethods() {
+       return Arrays.asList(
+               "startConnection",
+                "endConnection",
+               "getConnectionState",
+               "init",
+               "queryPurchases",
+               "acknowledgePurchase",
+               "consumePurchase",
+               "purchase",
+               "querySkuDetails",
+               "isReady"
+       );
+   }
+
+
 
     @NonNull
     @Override
@@ -128,7 +136,6 @@ public class GodotOneStore extends GodotPlugin {
         return Collections.singleton(loggedInSignal);
     }
     */
-
 
 
 
@@ -266,10 +273,13 @@ public class GodotOneStore extends GodotPlugin {
                         {
                             // The PurchaseClient is ready. You can query purchases here.
                             Log.d(TAG,"One Store Purchase Client inited");
-                            emitSignal("on_start_connection_success");
-//                    GodotLib.calldeferred(_callbackId,"on_start_connection_success",new Object[]{});
+                            emitSignal("connected");
                             _purchaseClientReady = true;
 
+                        }
+                        else
+                        {
+                            emitSignal("connect_error", _purchaseClient.getConnectionState(),"Error connecting to One Store");
                         }
                     }
 
@@ -280,6 +290,7 @@ public class GodotOneStore extends GodotPlugin {
                         Log.d(TAG,"One Store Purchase Client disconnected");
                         _purchaseClientReady = false;
                         startConnection();
+                        emitSignal("disconnected");
                     }
                 });
             }
