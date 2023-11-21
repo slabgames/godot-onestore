@@ -370,7 +370,7 @@ public class GodotOneStore extends GodotPlugin {
     }
 
     @UsedByGodot
-    public void requestPurchase(String productId)
+    public void purchase(String productId)
     {
         PurchaseFlowParams purchaseFlowParams = PurchaseFlowParams.newBuilder()
               .setProductId(productId)
