@@ -355,63 +355,93 @@ public class GodotOneStore extends GodotPlugin {
     @UsedByGodot
     public void acknowledgePurchase(final String purchaseToken)
     {
-        PurchaseData purchaseData = _purchasesDataMap.get(purchaseToken);
-        if (!purchaseData.isAcknowledged())
+        final PurchaseData purchaseData = _purchasesDataMap.get(purchaseToken);
+        if(purchaseData!=null)
         {
-            AcknowledgeParams acknowledgeParams = AcknowledgeParams.newBuilder().setPurchaseData(purchaseData).build();
-            _purchaseClient.acknowledgeAsync(acknowledgeParams, new AcknowledgeListener() {
-                @Override
-                public void onAcknowledgeResponse(IapResult iapResult, PurchaseData purchaseData) {
-                    // PurchaseClient by calling the queryPurchasesAsync() method.
-                    if(iapResult.isSuccess())
-                    {
-                        emitSignal("purchase_acknowledged", purchaseToken);
+            if (!purchaseData.isAcknowledged())
+            {
+                getActivity().runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        AcknowledgeParams acknowledgeParams = AcknowledgeParams.newBuilder().setPurchaseData(purchaseData).build();
+                        _purchaseClient.acknowledgeAsync(acknowledgeParams, new AcknowledgeListener() {
+                            @Override
+                            public void onAcknowledgeResponse(IapResult iapResult, PurchaseData purchaseData) {
+                                // PurchaseClient by calling the queryPurchasesAsync() method.
+                                if(iapResult.isSuccess())
+                                {
+                                    emitSignal("purchase_acknowledged", purchaseToken);
+                                }
+                                else {
+                                    emitSignal("purchase_acknowledgement_error", iapResult.getResponseCode(), iapResult.getMessage(), purchaseToken);
+                                }
+                            }
+                        });
                     }
-                    else {
-                        emitSignal("purchase_acknowledgement_error", iapResult.getResponseCode(), iapResult.getMessage(), purchaseToken);
-                    }
-                }
-            });
+                });
+            }
         }
+
     }
 
     @UsedByGodot
     public  void consumePurchase(final String purchaseToken)
     {
-        PurchaseData purchaseData = _purchasesDataMap.get(purchaseToken);
-        ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseData(purchaseData).build();
-        _purchaseClient.consumeAsync(consumeParams, new ConsumeListener() {
-            @Override
-            public void onConsumeResponse(IapResult iapResult, PurchaseData purchaseData) {
-                // Process the result.
-                if(iapResult.isSuccess())
-                {
-                    if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_OK) {
-                        emitSignal("purchase_consumed", purchaseToken);
+        if (_purchasesDataMap!=null  && _purchasesDataMap.size()>0) {
+
+            final PurchaseData purchaseData = _purchasesDataMap.get(purchaseToken);
+            if(purchaseData!=null)
+            {
+                getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            ConsumeParams consumeParams = ConsumeParams.newBuilder().setPurchaseData(purchaseData).build();
+                            _purchaseClient.consumeAsync(consumeParams, new ConsumeListener() {
+                                @Override
+                                public void onConsumeResponse(IapResult iapResult, PurchaseData purchaseData) {
+                                    // Process the result.
+                                    if (iapResult.isSuccess()) {
+                                        emitSignal("purchase_consumed", purchaseToken);
+
+                                    } else {
+                                        emitSignal("purchase_consumption_error", iapResult.getResponseCode(), iapResult.getMessage(), purchaseToken);
+                                    }
+                                }
+                            });
+                        }
                     }
-                }
-                else
-                {
-                    emitSignal("purchase_consumption_error", iapResult.getResponseCode(), iapResult.getMessage(), purchaseToken);
-                }
+                );
+
             }
-        });
+            else
+            {
+                emitSignal("purchase_consumption_error", 1, "Purchase data is null","");
+            }
+
+
+        }
     }
 
     @UsedByGodot
-    public void purchase(String productId)
+    public void purchase(final String productId)
     {
-        PurchaseFlowParams purchaseFlowParams = PurchaseFlowParams.newBuilder()
-              .setProductId(productId)
-              .setProductType(PurchaseClient.ProductType.INAPP)
+        getActivity().runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                PurchaseFlowParams purchaseFlowParams = PurchaseFlowParams.newBuilder()
+                        .setProductId(productId)
+                        .setProductType(PurchaseClient.ProductType.INAPP)
 //              .setDeveloperPayload(devPayload)    // optional
 //              .setQuantity(qty)                     // optional
 //              .setProductName(productName)                 // optional
 //              .setGameUserId(gameUserId)                  // optional
 //              .setPromotionApplicable(false)      // optional
-              .build();
+                        .build();
 
-        _purchaseClient.launchPurchaseFlow(getActivity(), purchaseFlowParams);
+                _purchaseClient.launchPurchaseFlow(getActivity(), purchaseFlowParams);
+            }
+        });
+
     }
 
 
