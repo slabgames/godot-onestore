@@ -61,7 +61,7 @@ public class OnestoreUtils {
 
 	public static Dictionary convertProductDetailsToDictionary(ProductDetail details) {
 		Dictionary dictionary = new Dictionary();
-		dictionary.put("id", details.getProductId());
+		dictionary.put("sku", details.getProductId());
 		dictionary.put("title", details.getTitle());
 //		dictionary.put("description", details.getDescription());
 		dictionary.put("type", details.getType());

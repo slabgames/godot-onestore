@@ -186,14 +186,15 @@ public class GodotOneStore extends GodotPlugin {
         public void onPurchasesUpdated(IapResult iapResult, List<PurchaseData> purchases) {
             // To be implemented in a later section.
             if (iapResult.isSuccess() && purchases != null) {
+                for(PurchaseData purchaseData : purchases)
+                {
+                    if((purchaseData.getPurchaseState() == PurchaseData.PurchaseState.PURCHASED)) {
+                        _purchasesDataMap.put(purchaseData.getPurchaseToken(),purchaseData);
+                    }
+
+                }
                 emitSignal("purchases_updated", (Object)OnestoreUtils.convertPurchaseListToDictionaryObjectArray(purchases));
-//                for (PurchaseData purchase : purchases) {
-//                    if (purchase.getPurchaseState() == PurchaseData.PurchaseState.PURCHASED) {
-//                        emitSignal("purchases_updated", (Object)OnestoreUtils.convertPurchaseListToDictionaryObjectArray(list));
-//                        emitSignal("on_handle_purchase", purchase.getProductId());
-////                    handlePurchase(purchase);
-//                    }
-//                }
+
             } else if (iapResult.getResponseCode() == PurchaseClient.ResponseCode.RESULT_NEED_UPDATE) {
                 // PurchaseClient by calling the launchUpdateOrInstallFlow() method.
                 _purchaseClient.launchUpdateOrInstallFlow(getActivity(),iapResultListener);
