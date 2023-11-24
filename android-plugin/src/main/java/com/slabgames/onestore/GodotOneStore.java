@@ -225,14 +225,14 @@ public class GodotOneStore extends GodotPlugin {
         @Override
         public void onPurchasesResponse(IapResult iapResult, List<PurchaseData> purchases) {
             if (iapResult.isSuccess() && purchases != null) {
-                Dictionary returnValue = new Dictionary();
-                returnValue.put("status", 0); // OK = 0
-                returnValue.put("purchases", OnestoreUtils.convertPurchaseListToDictionaryObjectArray(purchases));
-
                 _purchasesDataMap.clear();
                 for (PurchaseData purchase:purchases) {
                     _purchasesDataMap.put(purchase.getPurchaseToken(),purchase);
                 }
+
+                Dictionary returnValue = new Dictionary();
+                returnValue.put("status", 0); // OK = 0
+                returnValue.put("purchases", OnestoreUtils.convertPurchaseListToDictionaryObjectArray(purchases));
 
                 emitSignal("query_purchases_response", (Object)returnValue);
 
