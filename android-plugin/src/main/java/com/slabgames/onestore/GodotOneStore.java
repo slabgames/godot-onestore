@@ -372,10 +372,13 @@ public class GodotOneStore extends GodotPlugin {
                                 if(iapResult.isSuccess())
                                 {
                                     emitSignal("purchase_acknowledged", purchaseToken);
+                                    _purchasesDataMap.remove(purchaseToken);
                                 }
                                 else {
                                     emitSignal("purchase_acknowledgement_error", iapResult.getResponseCode(), iapResult.getMessage(), purchaseToken);
                                 }
+
+
                             }
                         });
                     }
@@ -403,10 +406,12 @@ public class GodotOneStore extends GodotPlugin {
                                     // Process the result.
                                     if (iapResult.isSuccess()) {
                                         emitSignal("purchase_consumed", purchaseToken);
-
+                                        _purchasesDataMap.remove(purchaseToken);
                                     } else {
                                         emitSignal("purchase_consumption_error", iapResult.getResponseCode(), iapResult.getMessage(), purchaseToken);
                                     }
+
+
                                 }
                             });
                         }
