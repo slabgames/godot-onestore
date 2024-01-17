@@ -55,7 +55,7 @@ dependencies {
      */
 
     compileOnly fileTree(dir: 'libs', include: ['godot-lib*.aar'])
-    implementation "com.onestorecorp.sdk:sdk-iap:21.00.00"
+    implementation "com.onestorecorp.sdk:sdk-iap:21.01.00"
     def onestore_sdk_version = "2.0.0"
     implementation "com.onestorecorp.sdk:sdk-licensing:$onestore_sdk_version"
     def onestore_configuration_version = "1.0.0"
