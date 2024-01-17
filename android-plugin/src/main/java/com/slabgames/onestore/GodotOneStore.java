@@ -40,8 +40,8 @@ import com.gaa.sdk.iap.PurchaseData;
 import com.gaa.sdk.iap.PurchaseFlowParams;
 import com.gaa.sdk.iap.PurchasesUpdatedListener;
 import com.gaa.sdk.iap.QueryPurchasesListener;
-import com.onestore.extern.licensing.AppLicenseChecker;
-import com.onestore.extern.licensing.LicenseCheckerListener;
+//import com.onestore.extern.licensing.AppLicenseChecker;
+//import com.onestore.extern.licensing.LicenseCheckerListener;
 import com.slabgames.onestore.utils.OnestoreUtils;
 
 
@@ -56,7 +56,7 @@ public class GodotOneStore extends GodotPlugin {
 
     private int _callbackId;
     private boolean calledStartConnection;
-    private AppLicenseChecker _appLicenseChecker;
+//    private AppLicenseChecker _appLicenseChecker;
 
     public GodotOneStore(Godot godot) 
     {
@@ -87,22 +87,22 @@ public class GodotOneStore extends GodotPlugin {
    }
 
 
-    private class AppLicenseListener implements LicenseCheckerListener {
-        @Override
-        public void granted(String license, String signature) {
-            Log.d(TAG, "AppLicenseChecker Granted");
-        }
-
-        @Override
-        public void denied() {
-            Log.d(TAG,"AppLicenseChecker Denied");
-        }
-
-        @Override
-        public void error(int code, String message) {
-            Log.d(TAG,"AppLicenseChecker Error : " + code + ". " + message);
-        }
-    }
+//    private class AppLicenseListener implements LicenseCheckerListener {
+//        @Override
+//        public void granted(String license, String signature) {
+//            Log.d(TAG, "AppLicenseChecker Granted");
+//        }
+//
+//        @Override
+//        public void denied() {
+//            Log.d(TAG,"AppLicenseChecker Denied");
+//        }
+//
+//        @Override
+//        public void error(int code, String message) {
+//            Log.d(TAG,"AppLicenseChecker Error : " + code + ". " + message);
+//        }
+//    }
 
 
 
@@ -341,7 +341,7 @@ public class GodotOneStore extends GodotPlugin {
 
                 getActivity().getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
 
-                _appLicenseChecker = AppLicenseChecker.get(getActivity(), licenseKey, new AppLicenseListener());
+//                _appLicenseChecker = AppLicenseChecker.get(getActivity(), licenseKey, new AppLicenseListener());
 
 
                 Log.d(TAG,"One Store plugin init on Java");
@@ -532,10 +532,10 @@ public class GodotOneStore extends GodotPlugin {
     @Override
     public void onMainDestroy() {
 
-        if(_appLicenseChecker!=null)
-        {
-            _appLicenseChecker.destroy();
-        }
+//        if(_appLicenseChecker!=null)
+//        {
+//            _appLicenseChecker.destroy();
+//        }
         super.onMainDestroy();
     }
 
