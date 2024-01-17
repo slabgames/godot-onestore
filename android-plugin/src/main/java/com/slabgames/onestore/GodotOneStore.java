@@ -24,6 +24,7 @@ import org.godotengine.godot.plugin.SignalInfo;
 import org.godotengine.godot.plugin.UsedByGodot;
 
 
+import com.gaa.sdk.auth.GaaSignInClient;
 import com.gaa.sdk.iap.AcknowledgeListener;
 import com.gaa.sdk.iap.AcknowledgeParams;
 import com.gaa.sdk.iap.ConsumeListener;
@@ -173,6 +174,7 @@ public class GodotOneStore extends GodotPlugin {
                 act.getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks(
 
                 ));
+                GaaSignInClient signInClient = GaaSignInClient.getClient(act);
                 Log.d(TAG,"OneStore plugin inited onCreate");
             }
         });
