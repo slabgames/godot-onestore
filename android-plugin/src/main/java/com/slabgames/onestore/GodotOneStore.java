@@ -25,6 +25,8 @@ import org.godotengine.godot.plugin.UsedByGodot;
 
 
 import com.gaa.sdk.auth.GaaSignInClient;
+import com.gaa.sdk.auth.OnAuthListener;
+import com.gaa.sdk.auth.SignInResult;
 import com.gaa.sdk.iap.AcknowledgeListener;
 import com.gaa.sdk.iap.AcknowledgeParams;
 import com.gaa.sdk.iap.ConsumeListener;
@@ -42,6 +44,8 @@ import com.gaa.sdk.iap.PurchasesUpdatedListener;
 import com.gaa.sdk.iap.QueryPurchasesListener;
 //import com.onestore.extern.licensing.AppLicenseChecker;
 //import com.onestore.extern.licensing.LicenseCheckerListener;
+import com.onestore.extern.licensing.AppLicenseChecker;
+import com.onestore.extern.licensing.LicenseCheckerListener;
 import com.slabgames.onestore.utils.OnestoreUtils;
 
 
@@ -56,7 +60,7 @@ public class GodotOneStore extends GodotPlugin {
 
     private int _callbackId;
     private boolean calledStartConnection;
-//    private AppLicenseChecker _appLicenseChecker;
+    private AppLicenseChecker _appLicenseChecker;
 
     public GodotOneStore(Godot godot) 
     {
@@ -175,6 +179,12 @@ public class GodotOneStore extends GodotPlugin {
 
                 ));
                 GaaSignInClient signInClient = GaaSignInClient.getClient(act);
+                signInClient.silentSignIn(new OnAuthListener() {
+                    @Override
+                    public void onResponse(SignInResult signInResult) {
+
+                    }
+                });
                 Log.d(TAG,"OneStore plugin inited onCreate");
             }
         });
@@ -341,7 +351,22 @@ public class GodotOneStore extends GodotPlugin {
 
                 getActivity().getApplication().registerActivityLifecycleCallbacks(new OneStoreLifecycleCallbacks());
 
-//                _appLicenseChecker = AppLicenseChecker.get(getActivity(), licenseKey, new AppLicenseListener());
+                _appLicenseChecker = AppLicenseChecker.get(getActivity(), licenseKey, new LicenseCheckerListener() {
+                    @Override
+                    public void granted(String s, String s1) {
+
+                    }
+
+                    @Override
+                    public void denied() {
+
+                    }
+
+                    @Override
+                    public void error(int i, String s) {
+
+                    }
+                });
 
 
                 Log.d(TAG,"One Store plugin init on Java");
@@ -532,10 +557,10 @@ public class GodotOneStore extends GodotPlugin {
     @Override
     public void onMainDestroy() {
 
-//        if(_appLicenseChecker!=null)
-//        {
-//            _appLicenseChecker.destroy();
-//        }
+        if(_appLicenseChecker!=null)
+        {
+            _appLicenseChecker.destroy();
+        }
         super.onMainDestroy();
     }
 

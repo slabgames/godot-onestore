@@ -28,6 +28,16 @@
             <data android:scheme="onestore" />
         </intent>
     </queries>
+
+        <queries>
+            <intent>
+                <action android:name="com.onestore.extern.licensing.LicensingService.ACTION" />
+            </intent>
+            <intent>
+                <action android:name="android.intent.action.VIEW" />
+                <data android:scheme="onestore" />
+            </intent>
+        </queries>
   <uses-permission android:name="android.permission.INTERNET" />
   <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
 </manifest>
